@@ -19,4 +19,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Week 03 tests
-        run: pytest week03/tests/ -v
+        run: |
+          export PYTHONPATH="${PYTHONPATH}:week03"
+          pytest week03/tests/ -v
