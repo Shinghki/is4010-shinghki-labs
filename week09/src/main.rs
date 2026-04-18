@@ -13,7 +13,11 @@ fn is_even(n: i32) -> bool {
 }
 
 fn max(a: i32, b: i32) -> i32 {
-    if a > b { a } else { b }
+    if a > b {
+        a
+    } else {
+        b
+    }
 }
 
 fn square(n: i32) -> i32 {
