@@ -3,10 +3,6 @@ name = "lab13"
 version = "0.1.0"
 edition = "2021"
 
-[[bin]]
-name = "lab13"
-path = "srs/main.rs"
-
 [dependencies]
 # Add dependencies as needed for your lab
 
