@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum Grade {
     A,
@@ -9,6 +10,7 @@ pub enum Grade {
     F,
 }
 
+#[allow(dead_code)]
 impl Grade {
     pub fn to_gpa_points(&self) -> f32 {
         match self {
@@ -39,6 +41,7 @@ impl Grade {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct CourseGrade {
     pub course_code: String,
@@ -70,6 +73,7 @@ impl CourseGrade {
 pub struct Student {
     pub id: String,
     pub name: String,
+    #[allow(dead_code)]
     pub email: String,
     pub credits_earned: u16,
     pub grades: Vec<CourseGrade>,
@@ -95,10 +99,12 @@ impl Student {
         }
     }
 
+    #[allow(dead_code)]
     pub fn add_credits(&mut self, credits: u16) {
         self.credits_earned += credits;
     }
 
+    #[allow(dead_code)]
     pub fn can_graduate(&self) -> bool {
         self.credits_earned >= 120
     }
@@ -145,6 +151,7 @@ impl StudentDatabase {
         self.students.get(id)
     }
 
+    #[allow(dead_code)]
     pub fn find_student_mut(&mut self, id: &str) -> Option<&mut Student> {
         self.students.get_mut(id)
     }
