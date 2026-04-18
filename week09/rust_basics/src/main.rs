@@ -1,26 +1,41 @@
 // Lab 09: Rust Basics
+// Implement the functions below and pass all tests
 
+/// Adds two i32 integers and returns the result
 fn add(a: i32, b: i32) -> i32 {
-    a + b
+    // TODO: Implement this function
+    // HINT: Just return the sum of a and b
+    0  // Replace this
 }
 
+/// Multiplies two i32 integers and returns the result
 fn multiply(a: i32, b: i32) -> i32 {
-    a * b
+    // TODO: Implement this function
+    0  // Replace this
 }
 
+/// Returns true if the number is even, false otherwise
 fn is_even(n: i32) -> bool {
-    n % 2 == 0
+    // TODO: Implement this function
+    // HINT: Use the modulo operator % to check divisibility by 2
+    false  // Replace this
 }
 
+/// Returns the larger of two i32 integers
 fn max(a: i32, b: i32) -> i32 {
-    if a > b { a } else { b }
+    // TODO: Implement this function
+    // HINT: Use an if expression
+    0  // Replace this
 }
 
+/// Squares a number (multiplies it by itself)
 fn square(n: i32) -> i32 {
-    n * n
+    // TODO: Implement this function
+    0  // Replace this
 }
 
 fn main() {
+    // Test your functions here before running cargo test
     println!("5 + 3 = {}", add(5, 3));
     println!("4 * 7 = {}", multiply(4, 7));
     println!("Is 10 even? {}", is_even(10));
@@ -28,6 +43,7 @@ fn main() {
     println!("Square of 6: {}", square(6));
 }
 
+// Test module - DO NOT MODIFY
 #[cfg(test)]
 mod tests {
     use super::*;
