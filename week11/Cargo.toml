@@ -1,2 +1,6 @@
-﻿[workspace]
-members = ["week11"]
+﻿[package]
+name = "week11"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
