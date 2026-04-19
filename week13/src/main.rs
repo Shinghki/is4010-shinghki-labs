@@ -4,18 +4,28 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::rc::Rc;
 
+/// Analyzes text and returns word count, average word length, and longest word.
 fn analyze_text(text: &str) -> (usize, f64, String) {
     let words: Vec<&str> = text.split_whitespace().collect();
+
     if words.is_empty() {
         return (0, 0.0, String::new());
     }
+
     let word_count = words.len();
+
     let total_length: usize = words.iter().map(|word| word.len()).sum();
     let average_length = total_length as f64 / word_count as f64;
-    let longest_word = words.iter().fold("", |acc, word| if word.len() > acc.len() { word } else { acc }).to_string();
+
+    let longest_word = words
+        .iter()
+        .fold("", |acc, word| if word.len() > acc.len() { word } else { acc })
+        .to_string();
+
     (word_count, average_length, longest_word)
 }
 
+/// Filters even numbers, squares them, and returns the sum.
 fn process_numbers(numbers: &[i32]) -> i32 {
     numbers
         .iter()
@@ -24,6 +34,7 @@ fn process_numbers(numbers: &[i32]) -> i32 {
         .sum()
 }
 
+/// Returns a closure that counts how many times it has been called.
 fn make_counter() -> impl FnMut() -> i32 {
     let mut count = 0;
     move || {
@@ -69,14 +80,14 @@ struct SharedData {
     value: i32,
 }
 
-#[allow(dead_code)]
 fn demonstrate_rc() {
     let data = Rc::new(SharedData { value: 42 });
+
     let owner1 = Rc::clone(&data);
-    let owner2 = Rc::clone(&data);
+    let _owner2 = Rc::clone(&data);
+
     println!("Reference count: {}", Rc::strong_count(&data));
     println!("Value: {}", owner1.value);
-    drop(owner2);
 }
 
 #[derive(Debug)]
@@ -98,16 +109,18 @@ impl Counter {
     }
 }
 
-#[allow(dead_code)]
 fn demonstrate_refcell() {
     let counter = Counter::new();
     let counter_ref1 = Rc::clone(&counter);
     let counter_ref2 = Rc::clone(&counter);
+
     Counter::increment(&counter_ref1);
     Counter::increment(&counter_ref2);
+
     println!("Counter value: {}", Counter::get_value(&counter));
 }
 
+/// Divides two numbers, returning an error for division by zero.
 fn divide(a: f64, b: f64) -> Result<f64, String> {
     if b == 0.0 {
         Err(String::from("Division by zero"))
@@ -116,7 +129,7 @@ fn divide(a: f64, b: f64) -> Result<f64, String> {
     }
 }
 
-#[allow(dead_code)]
+/// Reads a file and returns its contents.
 fn read_file_contents(path: &str) -> io::Result<String> {
     let mut file = File::open(path)?;
     let mut contents = String::new();
@@ -142,16 +155,19 @@ impl fmt::Display for ParseError {
 }
 
 fn parse_positive_number(input: &str) -> Result<i32, ParseError> {
-    if input.is_empty() {
+    if input.trim().is_empty() {
         return Err(ParseError::EmptyInput);
     }
+
     let num: i32 = input
         .trim()
         .parse()
         .map_err(|_| ParseError::InvalidNumber(input.to_string()))?;
-    if num < 1 || num > 100 {
+
+    if !(1..=100).contains(&num) {
         return Err(ParseError::OutOfRange(num));
     }
+
     Ok(num)
 }
 
@@ -161,7 +177,7 @@ struct Config {
     max_length: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum ProcessError {
     LineTooShort(String),
     LineTooLong(String),
@@ -185,6 +201,7 @@ fn process_lines(
         .map(|line| {
             let cfg = config.borrow();
             let len = line.len();
+
             if len < cfg.min_length {
                 Err(ProcessError::LineTooShort(line.clone()))
             } else if len > cfg.max_length {
@@ -197,28 +214,9 @@ fn process_lines(
 }
 
 fn main() {
-    println!("Lab 13: Idiomatic Rust\n");
-
-    println!("=== Iterators ===");
-    let stats = analyze_text("hello world rust");
-    println!("Words: {}, Avg length: {:.1}, Longest: {}", stats.0, stats.1, stats.2);
-
-    println!("\n=== Process Numbers ===");
-    println!("Result: {}", process_numbers(&[1, 2, 3, 4, 5, 6]));
-
-    println!("\n=== Counter Closure ===");
-    let mut counter = make_counter();
-    println!("{}, {}, {}", counter(), counter(), counter());
-
-    println!("\n=== Smart Pointers ===");
+    println!("Lab 13: Idiomatic Rust");
     demonstrate_rc();
     demonstrate_refcell();
-
-    println!("\n=== Error Handling ===");
-    println!("{:?}", divide(10.0, 2.0));
-    println!("{:?}", divide(10.0, 0.0));
-    println!("{:?}", parse_positive_number("50"));
-    println!("{:?}", parse_positive_number("abc"));
 }
 
 #[cfg(test)]
@@ -257,6 +255,7 @@ mod tests {
     #[test]
     fn test_binary_tree_creation() {
         let tree = BinaryTree::node(5, BinaryTree::leaf(3), BinaryTree::leaf(7));
+
         match tree {
             BinaryTree::Node { value, .. } => assert_eq!(value, 5),
             _ => panic!("Expected Node"),
@@ -264,7 +263,7 @@ mod tests {
     }
 
     #[test]
-    fn test_binary_tree_empty() {
+    fn test_binary_tree_new() {
         let tree: BinaryTree<i32> = BinaryTree::new();
         assert_eq!(tree, BinaryTree::Empty);
     }
@@ -273,8 +272,10 @@ mod tests {
     fn test_rc_reference_counting() {
         let data = Rc::new(SharedData { value: 42 });
         assert_eq!(Rc::strong_count(&data), 1);
+
         let _owner1 = Rc::clone(&data);
         assert_eq!(Rc::strong_count(&data), 2);
+
         let _owner2 = Rc::clone(&data);
         assert_eq!(Rc::strong_count(&data), 3);
     }
@@ -283,8 +284,10 @@ mod tests {
     fn test_refcell_mutation() {
         let counter = Counter::new();
         assert_eq!(Counter::get_value(&counter), 0);
+
         Counter::increment(&counter);
         assert_eq!(Counter::get_value(&counter), 1);
+
         Counter::increment(&counter);
         assert_eq!(Counter::get_value(&counter), 2);
     }
@@ -313,10 +316,12 @@ mod tests {
             parse_positive_number(""),
             Err(ParseError::EmptyInput)
         ));
+
         assert!(matches!(
             parse_positive_number("abc"),
             Err(ParseError::InvalidNumber(_))
         ));
+
         assert!(matches!(
             parse_positive_number("150"),
             Err(ParseError::OutOfRange(150))
@@ -329,7 +334,9 @@ mod tests {
             min_length: 3,
             max_length: 10,
         }));
+
         let lines = vec!["hello".to_string(), "world".to_string()];
+
         let result = process_lines(&lines, config);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), vec!["HELLO", "WORLD"]);
@@ -341,6 +348,7 @@ mod tests {
             min_length: 5,
             max_length: 10,
         }));
+
         let lines = vec!["hi".to_string()];
         let result = process_lines(&lines, config);
         assert!(result.is_err());
@@ -350,10 +358,14 @@ mod tests {
     fn test_process_lines_too_long() {
         let config = Rc::new(RefCell::new(Config {
             min_length: 1,
-            max_length: 3,
+            max_length: 4,
         }));
-        let lines = vec!["toolongline".to_string()];
+
+        let lines = vec!["toolong".to_string()];
         let result = process_lines(&lines, config);
-        assert!(result.is_err());
+        assert!(matches!(
+            result,
+            Err(ProcessError::LineTooLong(_))
+        ));
     }
 }
