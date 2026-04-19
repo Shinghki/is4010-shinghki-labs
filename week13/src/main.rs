@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::cell::RefCell;
 use std::fmt;
 use std::fs::File;
@@ -19,7 +20,10 @@ fn analyze_text(text: &str) -> (usize, f64, String) {
 
     let longest_word = words
         .iter()
-        .fold("", |acc, word| if word.len() > acc.len() { word } else { acc })
+        .fold(
+            "",
+            |acc, word| if word.len() > acc.len() { word } else { acc },
+        )
         .to_string();
 
     (word_count, average_length, longest_word)
@@ -363,9 +367,6 @@ mod tests {
 
         let lines = vec!["toolong".to_string()];
         let result = process_lines(&lines, config);
-        assert!(matches!(
-            result,
-            Err(ProcessError::LineTooLong(_))
-        ));
+        assert!(matches!(result, Err(ProcessError::LineTooLong(_))));
     }
 }
